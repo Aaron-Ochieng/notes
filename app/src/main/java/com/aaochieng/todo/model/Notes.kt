@@ -10,7 +10,8 @@ data class Note(
     val title : String,
     val content : String,
     val createdAt : LocalDateTime,
-    val color : Long,
-    @PrimaryKey(autoGenerate = true) // Room to autogenerate the id
-    val id:Int,
+    val color : String,
+
+    @PrimaryKey(autoGenerate = true)
+    val id : Int = 0
 )
