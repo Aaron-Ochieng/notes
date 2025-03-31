@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    id("kotlin-kapt")
 }
 
 android {
@@ -57,5 +58,6 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
 
 
-
+    this.kapt(libs.androidx.room.compiler)
+    implementation(libs.androidx.room.ktx)
 }
