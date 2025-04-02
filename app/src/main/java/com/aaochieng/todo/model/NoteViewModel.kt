@@ -52,7 +52,7 @@ class NoteViewModel(
                     title = title,
                     content = content,
                     color = uicolors.random(),
-                    createdAt = LocalDateTime.now()
+                    createdAt = DateTimeUtil.formatNoteDate(LocalDateTime.now())
                 )
                 viewModelScope.launch {
                     dao.insertNote(note)
