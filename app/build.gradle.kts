@@ -60,4 +60,6 @@ dependencies {
 
     this.kapt(libs.androidx.room.compiler)
     implementation(libs.androidx.room.ktx)
+    implementation ("androidx.core:core-splashscreen:1.0.0")
+
 }
