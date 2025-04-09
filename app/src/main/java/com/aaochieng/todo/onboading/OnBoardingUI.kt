@@ -35,9 +35,6 @@ fun OnBoardingUI(onFinished:() -> Unit){
         OnBoardingModel.ThirdPage)
     val pageState = rememberPagerState (initialPage = 0){ pages.size  }
     val scope = rememberCoroutineScope();
-    val currentData = pages[pageState.currentPage]
-
-
     Scaffold(
         bottomBar = {
             Row (
@@ -90,6 +87,9 @@ fun OnBoardingUI(onFinished:() -> Unit){
                             scope.launch {
                                 if (pageState.currentPage != pages.size){
                                     pageState.animateScrollToPage(pageState.currentPage+1)
+                                }
+                                if (pageState.currentPage == pages.size-1){
+                                    onFinished()
                                 }
                             }
                         }
