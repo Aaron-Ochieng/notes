@@ -1,44 +1,52 @@
 package com.aaochieng.todo
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalContext
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.core.view.WindowCompat
 import com.aaochieng.todo.onboading.OnBoardingUI
 import com.aaochieng.todo.ui.theme.ToDoTheme
+import com.aaochieng.todo.screens.HomeScreen
+import androidx.core.content.edit
+import com.aaochieng.todo.onboading.OnBoardingPrefs
 
 class MainActivity : ComponentActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         installSplashScreen()
+        WindowCompat.setDecorFitsSystemWindows(window, false)
         enableEdgeToEdge()
         setContent {
+            var onBoardingCompleted by remember { mutableStateOf(false) }
+            val context = LocalContext.current
+
+            LaunchedEffect(key1 = true) {
+                onBoardingCompleted = OnBoardingPrefs.isOnBoardingCompleted(context)
+            }
             ToDoTheme {
-                    OnBoardingUI(onFinished = {})
+                if (onBoardingCompleted){
+                    HomeScreen()
+                }else{
+                    OnBoardingUI(onFinished = {
+                        OnBoardingPrefs.setOnBoardingCompleted(context)
+                        onBoardingCompleted = true
+                    })
+                }
+
             }
         }
     }
 }
 
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
 
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    ToDoTheme {
-        Greeting("Aaron")
-    }
-}
