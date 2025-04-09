@@ -1,7 +1,5 @@
 package com.aaochieng.todo
 
-import android.content.Context
-import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -17,8 +15,9 @@ import androidx.core.view.WindowCompat
 import com.aaochieng.todo.onboading.OnBoardingUI
 import com.aaochieng.todo.ui.theme.ToDoTheme
 import com.aaochieng.todo.screens.HomeScreen
-import androidx.core.content.edit
 import com.aaochieng.todo.onboading.OnBoardingPrefs
+import com.aaochieng.todo.screens.LoadingScreen
+import com.aaochieng.todo.screens.UIState
 
 class MainActivity : ComponentActivity() {
 
@@ -28,20 +27,25 @@ class MainActivity : ComponentActivity() {
         WindowCompat.setDecorFitsSystemWindows(window, false)
         enableEdgeToEdge()
         setContent {
-            var onBoardingCompleted by remember { mutableStateOf(false) }
+            var uiState by remember { mutableStateOf<UIState>(UIState.Loading) }
             val context = LocalContext.current
 
             LaunchedEffect(key1 = true) {
-                onBoardingCompleted = OnBoardingPrefs.isOnBoardingCompleted(context)
+                val isOnBoardingComplete = OnBoardingPrefs.isOnBoardingCompleted(context)
+                uiState = if (isOnBoardingComplete) {
+                    UIState.HomeScreen
+                } else {
+                    UIState.OnBoardingUI
+                }
             }
             ToDoTheme {
-                if (onBoardingCompleted){
-                    HomeScreen()
-                }else{
-                    OnBoardingUI(onFinished = {
+                when (uiState) {
+                    UIState.Loading -> LoadingScreen()
+                    UIState.OnBoardingUI -> OnBoardingUI(onFinished = {
                         OnBoardingPrefs.setOnBoardingCompleted(context)
-                        onBoardingCompleted = true
+                        uiState = UIState.HomeScreen
                     })
+                    UIState.HomeScreen -> HomeScreen()
                 }
 
             }
